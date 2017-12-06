@@ -8,44 +8,52 @@ using System.Threading.Tasks;
 
 namespace NAudioWrapper
 {
-    class Player
+    public class Player
     {
         private WaveFormat waveFormat;
         private WaveOutEvent waveOutEvent;
-        public EventHandler<StoppedEventArgs> PlaybackStopped;
-        public Player(WaveFormat waveFormat)
+
+        public delegate void PlayingStoppedHandler(object obj, EventArgs e);
+        public PlayingStoppedHandler PlaybackStopped;
+
+        private int deviceNumber;
+        public Player(int deviceNumber)
         {
-            this.waveFormat = waveFormat;
+            this.waveFormat = new WaveFormat(8000, 1);
+            this.deviceNumber = deviceNumber;
         }
         public void Play(byte[] buffer)
         {
-            try
+            if (waveOutEvent == null)
             {
-                if (waveOutEvent == null)
-                {
-                    waveOutEvent = new WaveOutEvent();
-                    if (PlaybackStopped != null)
-                    {
-                        waveOutEvent.PlaybackStopped += PlaybackStopped;
-                    }
-                }
-                else
-                {
-                    waveOutEvent.Stop();
-                }
-                waveOutEvent.Init(new RawSourceWaveStream(new MemoryStream(buffer), waveFormat));
-                waveOutEvent.Volume = 1;
-                waveOutEvent.Play();
+                waveOutEvent = new WaveOutEvent();
+                waveOutEvent.DeviceNumber = deviceNumber;
+                waveOutEvent.PlaybackStopped += playbackStopped;
             }
-            catch (Exception ex)
+            else
             {
-
-                throw ex;
+                waveOutEvent.Stop();
             }
+            waveOutEvent.Init(new RawSourceWaveStream(new MemoryStream(buffer), waveFormat));
+            waveOutEvent.Volume = 1;
+            waveOutEvent.Play();
         }
+
+        private void playbackStopped(object sender, StoppedEventArgs e)
+        {
+            PlaybackStopped?.BeginInvoke(this, new EventArgs(), null, null);
+        }
+
         public void Stop()
         {
-            waveOutEvent.Stop();
+            try
+            {
+                waveOutEvent.Stop();
+                waveOutEvent.Dispose();
+            }
+            catch
+            {
+            }
         }
     }
 }
