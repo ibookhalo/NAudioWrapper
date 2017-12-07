@@ -5,6 +5,7 @@ namespace NAudioWrapper
     [Serializable]
     public class DeviceInfo
     {
+        private const string NO_DEVICE = "Kein Gerät";
         public DeviceInfo(string productName,int id)
         {
             this.Productname = productName;
@@ -12,7 +13,7 @@ namespace NAudioWrapper
         }
         public DeviceInfo()
         {
-            Productname = "Kein";
+            Productname = NO_DEVICE;
             Id = -1;
         }
         public string Productname { get; set; }
@@ -20,7 +21,7 @@ namespace NAudioWrapper
 
         public override string ToString()
         {
-            return Productname != null ? Productname : "Kein";
+            return Productname != null ? Productname : NO_DEVICE;
         }
     }
 }

@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 namespace NAudioWrapper
 {
-    public class Recorder
+    public class SoundRecorder
     {
         private WaveInEvent waveSource = null;
         private List<byte> buffer = null;
         private int deviceNumber;
 
-        public delegate void RecordingStoppedHandler(object obj, RecordingStoppedEventArgs e);
+        public delegate void RecordingStoppedHandler(object obj, SoundRecordingStoppedEventArgs e);
         public event RecordingStoppedHandler RecordingStoppedEvent;
 
-        public Recorder(int deviceNumber)
+        public SoundRecorder(int deviceNumber)
         {
             buffer = new List<byte>();
             this.deviceNumber = deviceNumber;
         }
-        public void StartRecording()
+        public void Start()
         {
             try
             {
@@ -46,20 +46,23 @@ namespace NAudioWrapper
 
         private void WaveSource_RecordingStopped(object sender, StoppedEventArgs e)
         {
-            RecordingStoppedEvent?.BeginInvoke(this, new RecordingStoppedEventArgs(buffer.ToArray()), null, null);
+            var bufArray = buffer.ToArray();
+            if (bufArray.Length>0)
+            {
+                RecordingStoppedEvent?.BeginInvoke(this, new SoundRecordingStoppedEventArgs(bufArray), null, null);
+            }
             buffer.Clear();
         }
 
-        public void StopRecording()
+        public void Stop()
         {
             try
             {
                 waveSource.StopRecording();
                 waveSource.Dispose();
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
             }
         }
         private void WaveSource_DataAvailable(object sender, WaveInEventArgs e)

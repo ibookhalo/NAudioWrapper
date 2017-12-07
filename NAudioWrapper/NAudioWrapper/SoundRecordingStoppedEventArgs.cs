@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace NAudioWrapper
 {
-    public class RecordingStoppedEventArgs:EventArgs
+    public class SoundRecordingStoppedEventArgs:EventArgs
     {
         public byte[] SoundeData { get; private set; }
 
-        public RecordingStoppedEventArgs(byte[] soundeData)
+        public SoundRecordingStoppedEventArgs(byte[] soundeData)
         {
             SoundeData = soundeData;
         }

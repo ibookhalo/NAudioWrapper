@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NAudioWrapper
 {
-    public class Player
+    public class SoundPlayer
     {
         private WaveFormat waveFormat;
         private WaveOutEvent waveOutEvent;
@@ -17,7 +17,7 @@ namespace NAudioWrapper
         public PlayingStoppedHandler PlaybackStopped;
 
         private int deviceNumber;
-        public Player(int deviceNumber)
+        public SoundPlayer(int deviceNumber)
         {
             this.waveFormat = new WaveFormat(8000, 1);
             this.deviceNumber = deviceNumber;
