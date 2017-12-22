@@ -10,16 +10,14 @@ namespace NAudioWrapper
 {
     public class SoundPlayer
     {
-        private WaveFormat waveFormat;
         private WaveOutEvent waveOutEvent;
 
         public delegate void PlayingStoppedHandler(object obj, EventArgs e);
-        public PlayingStoppedHandler PlaybackStopped;
+        public event PlayingStoppedHandler PlaybackStoppedEvent;
 
         private int deviceNumber;
         public SoundPlayer(int deviceNumber)
         {
-            this.waveFormat = new WaveFormat(8000, 1);
             this.deviceNumber = deviceNumber;
         }
         public void Play(byte[] buffer)
@@ -34,14 +32,14 @@ namespace NAudioWrapper
             {
                 waveOutEvent.Stop();
             }
-            waveOutEvent.Init(new RawSourceWaveStream(new MemoryStream(buffer), waveFormat));
+            waveOutEvent.Init(new RawSourceWaveStream(new MemoryStream(buffer), new WaveFormat(44100, WaveOut.GetCapabilities(waveOutEvent.DeviceNumber).Channels)));
             waveOutEvent.Volume = 1;
             waveOutEvent.Play();
         }
 
         private void playbackStopped(object sender, StoppedEventArgs e)
         {
-            PlaybackStopped?.BeginInvoke(this, new EventArgs(), null, null);
+            PlaybackStoppedEvent?.BeginInvoke(this, new EventArgs(), null, null);
         }
 
         public void Stop()

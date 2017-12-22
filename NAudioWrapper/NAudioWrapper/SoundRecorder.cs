@@ -31,6 +31,7 @@ namespace NAudioWrapper
                 {
                     waveSource = new WaveInEvent();
                     waveSource.DeviceNumber = deviceNumber;
+                    waveSource.WaveFormat = new WaveFormat(44100, WaveIn.GetCapabilities(waveSource.DeviceNumber).Channels);
                     waveSource.RecordingStopped += WaveSource_RecordingStopped;
                     waveSource.DataAvailable += WaveSource_DataAvailable;
                     

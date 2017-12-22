@@ -6,18 +6,18 @@ namespace NAudioWrapper
     public class DeviceInfo
     {
         private const string NO_DEVICE = "Kein Gerät";
-        public DeviceInfo(string productName,int id)
+        public DeviceInfo(string productName,string productGuid)
         {
             this.Productname = productName;
-            this.Id = id;
+            this.ProductGuid = productGuid;
         }
         public DeviceInfo()
         {
             Productname = NO_DEVICE;
-            Id = -1;
+            ProductGuid = string.Empty;
         }
         public string Productname { get; set; }
-        public int Id { get; set; }
+        public string ProductGuid { get; set; }
 
         public override string ToString()
         {
